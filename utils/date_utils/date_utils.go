@@ -21,3 +21,11 @@ func GetDbCurrentDateTimeString() string {
 	return GetCurrentDateTime().Format(DbDateTimeFormat)
 }
 
+func ConvertToApiDateFormat(t *time.Time) string {
+	return t.Format(ApiDateTimeFormat)
+}
+
+func ConvertToDbDateFormat(t *time.Time) string {
+	return t.Format(DbDateTimeFormat)
+}
+
