@@ -149,25 +149,57 @@ func (a *Service) ValidateJweToken(token string) (map[string]interface{}, *error
 	// parse token string
 	claims, err := a.parseTokenString(token)
 	if err != nil {
-		return nil, error_utils.NewInternalServerError(err.Error())
+		return nil, error_utils.NewUnauthorizedError(err.Error())
 	}
 
 	// validate dates
-	origIat := int64(claims["orig_iat"].(float64))
-	if origIat < a.timeFunc().Add(-a.maxRefresh).Unix() {
-		return nil, error_utils.NewInternalServerError("Token is expired")
+	if claims["orig_iat"] == nil {
+		return nil, error_utils.NewUnauthorizedError("Orig Iat is missing")
 	}
 
+	// try convert to float64
+	if _, ok := claims["orig_iat"].(float64); !ok {
+		return nil, error_utils.NewUnauthorizedError("Orig Iat must be float64 format")
+	}
+
+	// get value and validate
+	origIat := int64(claims["orig_iat"].(float64))
+	if origIat < a.timeFunc().Add(-a.maxRefresh).Unix() {
+		return nil, error_utils.NewUnauthorizedError("Token is expired")
+	}
+
+	// check if exp exists in map
+	if claims["exp"] == nil {
+		return nil, error_utils.NewUnauthorizedError("Exp is missing")
+	}
+
+	// try convert to float 64
+	if _, ok := claims["exp"].(float64); !ok {
+		return nil, error_utils.NewUnauthorizedError("Exp must be float64 format")
+	}
+
+	// get value and validate
 	exp := int64(claims["exp"].(float64))
 	if exp < a.timeFunc().Unix(){
-		return nil, error_utils.NewInternalServerError("Token is expired")
+		return nil, error_utils.NewUnauthorizedError("Token is expired")
 	}
 	// validate dates
 
 	// validate issuer
+	// check if iss exists in map
+	if claims["iss"] == nil {
+		return nil, error_utils.NewUnauthorizedError("Iss is missing")
+	}
+
+	// try convert to string
+	if _, ok := claims["iss"].(string); !ok {
+		return nil, error_utils.NewUnauthorizedError("Iss must be string format")
+	}
+
+	// get value and validate
 	issuer := claims["iss"]
 	if issuer != a.issuer{
-		return nil, error_utils.NewInternalServerError("Invalid issuer")
+		return nil, error_utils.NewUnauthorizedError("Invalid issuer")
 	}
 	// validate issuer
 
