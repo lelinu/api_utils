@@ -1,7 +1,6 @@
 package jwe
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -20,13 +19,6 @@ func init() {
 	encryptionKey = "s4IIq9lQm2SKBlJoHAWzkRGSNaPCLZw2"
 	issuer = "lelinu"
 	customClaims = map[string]interface{}{"id": 1, "role": "user", "merchantID": "1234546"}
-}
-
-func TestToken(t *testing.T){
-	service, _ := NewService("A256GCM", "rbCdjdybxncSb6drqd9bvBcfembQWbkv", "https://golelinu.com", 1, 1)
-	var token = "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwidHlwIjoiSldUIn0..retSH04y4B7BcseU.U2-yKi3bntdOPidgof_31BREs7UkfxW-FiDKl7t6d-2mNjb9K9tGkOrWckFrnsoxG7Xe2g8uxq_WNfxbhmTCFswpJMCOamUe_9YQqceHNEkp_y_3qjU052_p_Xlmnjjlgf9YQ72EQE20e_46vatDDkN9XgtvykRL1_X2y97ZQ6Wer_bQklHXNnEo5NxqNvJEWXF46ymUI9CZlDR__iZBPH5csIvhXnD0jxVCeTwoZ1g4B9lqgVocnO6blpCzxpQNSJm2TcfAFEENRgVAANVM7oST94Nhz2BR-Q5rEISfRp0RXJnFES4-bXs2Un1aPG39QLPRC5MeEDtKZ3Ru9PaQEOBHX8RQqe5Ym6lMqUbU3kL7MG6XOaess5JlvYuHop9oUS1QAo12VwbsTsqRydYyjvKAW3XQNEi98YFQn7PVxm-caSp1BXinNDwj64o1WjEV1RSR1sgYHKZtMuF5OAS4Hmc9oE5qe1xtw1ZJRwTtKNWskxljmcPL4K9p7xvzHARFJU7koqRqJeP3IIX3sYNtQj3ri0L_OzlLSUTKoDwo4W5IQpb34t_H1KbNxhFWh0pxFB6iNsMYNqge8gjNwzr07HRLjkBi2hSpJ1_pVCmb9mXZPPIRmP50-iiAG5VKrLtik7hw4wBsuPhlnZ7qF6cR3X6wSrwMPtdxApuU45R37_j8_E-BXyE9cqv6AofO-j98flo4IppNBjNRkkFjM5_WP330f5f1SMw.nUhln8D77nGXtdaaedO2DA"
-	_, err := service.ValidateJweToken(token)
-	fmt.Printf("Error is %v", err)
 }
 
 func TestNewServiceInvalidAlgorithm(t *testing.T) {
