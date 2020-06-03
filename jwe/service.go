@@ -181,7 +181,6 @@ func (a *Service) ValidateJweToken(token string) (map[string]interface{}, *error
 	// get value and validate
 	exp := int64(claims["exp"].(float64))
 	if exp < a.timeFunc().Unix(){
-		fmt.Println("dhalt awn 2...")
 		return nil, error_utils.NewUnauthorizedError("Token is expired")
 	}
 	// validate dates
