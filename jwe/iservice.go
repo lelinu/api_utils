@@ -9,4 +9,5 @@ import (
 type IService interface {
 	GenerateJweToken(data map[string]interface{}) (string, *time.Time, *error_utils.ApiError)
 	RefreshJweToken(token string) (string, *time.Time, *error_utils.ApiError)
+	ValidateJweToken(token string) (map[string]interface{}, *error_utils.ApiError)
 }
