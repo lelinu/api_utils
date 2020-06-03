@@ -64,7 +64,7 @@ func (a *Service) init(encryptionAlgorithm string, encryptionKey string, issuer 
 	a.encryptionAlgorithm = encryptionAlgorithm
 	a.encryptionKey = []byte(encryptionKey)
 	a.issuer = issuer
-	a.maxRefresh = maxRefreshInHours
+	a.maxRefresh = time.Hour * maxRefreshInHours
 
 	// set defaults
 	a.timeFunc = time.Now
@@ -152,6 +152,8 @@ func (a *Service) ValidateJweToken(token string) (map[string]interface{}, *error
 		return nil, error_utils.NewUnauthorizedError(err.Error())
 	}
 
+	fmt.Printf("claims are %v", claims)
+
 	// validate dates
 	if claims["orig_iat"] == nil {
 		return nil, error_utils.NewUnauthorizedError("Orig Iat is missing")
@@ -165,6 +167,7 @@ func (a *Service) ValidateJweToken(token string) (map[string]interface{}, *error
 	// get value and validate
 	origIat := int64(claims["orig_iat"].(float64))
 	if origIat < a.timeFunc().Add(-a.maxRefresh).Unix() {
+		fmt.Println("dhalt awn 1...")
 		return nil, error_utils.NewUnauthorizedError("Token is expired")
 	}
 
@@ -181,6 +184,7 @@ func (a *Service) ValidateJweToken(token string) (map[string]interface{}, *error
 	// get value and validate
 	exp := int64(claims["exp"].(float64))
 	if exp < a.timeFunc().Unix(){
+		fmt.Println("dhalt awn 2...")
 		return nil, error_utils.NewUnauthorizedError("Token is expired")
 	}
 	// validate dates
