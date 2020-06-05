@@ -39,9 +39,8 @@ func (a *Service) init(signingAlgorithm string, jwtSecretKey string, issuer stri
 	timeoutInHours time.Duration, maxRefreshInHours time.Duration) *error_utils.ApiError {
 
 	// validations
-
 	// validate signing algorithm
-	if err := a.validateSigningAlgorithm(signingAlgorithm); err != nil{
+	if err := a.validateSigningAlgorithm(signingAlgorithm); err != nil {
 		return error_utils.NewBadRequestError(fmt.Sprintf("Auth: %v", err.Error()))
 	}
 
@@ -103,6 +102,7 @@ func (a *Service) GenerateJwtToken(customClaims map[string]interface{}) (string,
 
 //RefreshJwtToken will refresh a jwt token
 func (a *Service) RefreshJwtToken(token string) (string, *time.Time, *error_utils.ApiError) {
+
 	claims, err := a.ValidateJwtToken(token)
 	if err != nil {
 		return "", nil, err
@@ -111,7 +111,6 @@ func (a *Service) RefreshJwtToken(token string) (string, *time.Time, *error_util
 	// Create the token
 	newToken := jwt.New(jwt.GetSigningMethod(a.signingAlgorithm))
 	newClaims := newToken.Claims.(jwt.MapClaims)
-
 	for key := range claims {
 		newClaims[key] = claims[key]
 	}
@@ -131,28 +130,54 @@ func (a *Service) RefreshJwtToken(token string) (string, *time.Time, *error_util
 //ValidateJwtToken will check if the token is expired
 func (a *Service) ValidateJwtToken(token string) (map[string]interface{}, *error_utils.ApiError) {
 
-	parsedToken, err := a.parseTokenString(token)
+	// parse token string
+	claims, err := a.parseTokenString(token)
 	if err != nil {
 		return nil, error_utils.NewInternalServerError(err.Error())
 	}
-	claims := parsedToken.Claims.(jwt.MapClaims)
 
 	// validate dates
-	origIat := int64(claims["orig_iat"].(float64))
-	if origIat < a.timeFunc().Add(-a.maxRefresh).Unix() {
-		return nil, error_utils.NewInternalServerError("Token is expired")
+	if claims["orig_iat"] == nil {
+		return nil, error_utils.NewUnauthorizedError("Orig Iat is missing")
 	}
 
+	// try convert to float64
+	if _, ok := claims["orig_iat"].(float64); !ok {
+		return nil, error_utils.NewUnauthorizedError("Orig Iat must be float64 format")
+	}
+
+	// check if exp exists in map
+	if claims["exp"] == nil {
+		return nil, error_utils.NewUnauthorizedError("Exp is missing")
+	}
+
+	// try convert to float 64
+	if _, ok := claims["exp"].(float64); !ok {
+		return nil, error_utils.NewUnauthorizedError("Exp must be float64 format")
+	}
+
+	// get value and validate
 	exp := int64(claims["exp"].(float64))
-	if exp < a.timeFunc().Unix(){
-		return nil, error_utils.NewInternalServerError("Token is expired")
+	if exp < a.timeFunc().Unix() {
+		return nil, error_utils.NewUnauthorizedError("Token is expired")
 	}
 	// validate dates
 
 	// validate issuer
+	// check if iss exists in map
+	if claims["iss"] == nil {
+		return nil, error_utils.NewUnauthorizedError("Iss is missing")
+	}
+
+	// try convert to string
+	if _, ok := claims["iss"].(string); !ok {
+		return nil, error_utils.NewUnauthorizedError("Iss must be string format")
+	}
+
+	// get value and validate
 	issuer := claims["iss"]
-	if issuer != a.issuer{
-		return nil, error_utils.NewInternalServerError("Invalid issuer")
+	if issuer != a.issuer {
+		return nil, error_utils.NewUnauthorizedError("Invalid issuer")
 	}
 	// validate issuer
 
@@ -160,14 +185,19 @@ func (a *Service) ValidateJwtToken(token string) (map[string]interface{}, *error
 }
 
 //parseTokenString will parse a token string to a jwt.Token
-func (a *Service) parseTokenString(token string) (*jwt.Token, error) {
-	return jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+func (a *Service) parseTokenString(token string) (map[string]interface{}, error) {
+
+	tok, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		if jwt.GetSigningMethod(a.signingAlgorithm) != t.Method {
 			return nil, errors.New("invalid signature")
 		}
-
 		return a.jwtSecretKey, nil
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	return tok.Claims.(jwt.MapClaims), nil
 }
 
 //signedString will sign the string

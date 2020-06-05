@@ -6,8 +6,7 @@ import (
 	"time"
 )
 
-var
-(
+var (
 	encryptionAlgorithm string
 	encryptionKey       string
 	issuer              string
