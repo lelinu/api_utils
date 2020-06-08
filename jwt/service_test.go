@@ -85,12 +85,15 @@ func TestGenerateJwtTokenValidWithCustomClaims(t *testing.T) {
 //TestGenerateJwtTokenValidWithoutCustomClaims
 func TestGenerateJwtTokenValidWithoutCustomClaims(t *testing.T) {
 
+	// arrange
 	service, err := NewService(signingAlgorithm, jwtSecretKey, issuer, 1, 1)
 	assert.Nil(t, err)
 	assert.NotNil(t, service)
 
+	// act
 	token, time, err := service.GenerateJwtToken(nil)
 
+	// assert
 	assert.NotNil(t, token)
 	assert.NotNil(t, time)
 	assert.Nil(t, err)
@@ -168,7 +171,7 @@ func TestValidateJwtTokenExpiredWithoutCustomClaims(t *testing.T) {
 	assert.Nil(t, claims)
 }
 
-//TestValidateJwtTokenExpiredWithCustomClaims
+//TestValidateJwtTokenExpiredWithCustomClaimsf
 func TestValidateJwtTokenExpiredWithCustomClaims(t *testing.T) {
 
 	// arrange
@@ -243,14 +246,14 @@ func TestValidateJwtTokenValidWithoutCustomClaims(t *testing.T) {
 }
 
 //TestParseTokenStringInvalid
-func TestParseTokenStringInvalid(t *testing.T){
+func TestParseTokenStringInvalid(t *testing.T) {
 
 	token := "invalid-token"
 	service, apiErr := NewService(signingAlgorithm, jwtSecretKey, issuer, 1, 1)
 	assert.Nil(t, apiErr)
 	assert.NotNil(t, service)
 
-	jwtToken, err :=service.parseTokenString(token)
+	jwtToken, err := service.parseTokenString(token)
 	assert.NotNil(t, err)
 	assert.EqualValues(t, "token contains an invalid number of segments", err.Error())
 	assert.Nil(t, jwtToken)
