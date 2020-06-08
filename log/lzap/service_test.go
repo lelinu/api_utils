@@ -12,7 +12,7 @@ var (
 )
 
 func init(){
-	logger = NewService("info", "")
+	logger = NewService("info", "/var/log/access_log.log")
 }
 
 func getCurrentDirectory() string {

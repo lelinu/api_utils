@@ -144,6 +144,8 @@ func (s *Service) getOutputPaths(logPath string) []string{
 			outputPaths = append(outputPaths, "winfile:///" + logPath)
 
 		}else {
+			file, _ := os.OpenFile(logPath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+			zapcore.AddSync(file)
 			outputPaths = append(outputPaths, logPath)
 		}
 	}
