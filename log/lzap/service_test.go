@@ -1,18 +1,19 @@
 package lzap
 
 import (
-	"github.com/pkg/errors"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/pkg/errors"
 )
 
 var (
 	logger IService
 )
 
-func init(){
-	logger = NewService("info", "/var/log/access_log.log")
+func init() {
+	logger = NewService("info", "access.log")
 }
 
 func getCurrentDirectory() string {
@@ -52,7 +53,7 @@ func TestLogDebugWithoutTagsSuccessful(t *testing.T) {
 
 //TestLogErrorWithTagsSuccessful will test the logger
 func TestLogErrorWithTagsSuccessful(t *testing.T) {
-	logger.Error("This is an error message", errors.New("oops an error message"),"client:123456")
+	logger.Error("This is an error message", errors.New("oops an error message"), "client:123456")
 }
 
 //TestLogErrorWithoutTagsSuccessful will test the logger
@@ -61,13 +62,8 @@ func TestLogErrorWithoutTagsSuccessful(t *testing.T) {
 }
 
 //BenchmarkLogInfo will benchmark the functionality
-func BenchmarkLogInfo(b *testing.B){
-	for n := 0; n < b.N; n++{
+func BenchmarkLogInfo(b *testing.B) {
+	for n := 0; n < b.N; n++ {
 		logger.Info("This is a message", "client:123456")
 	}
 }
-
-
-
-
-
