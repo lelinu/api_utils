@@ -71,6 +71,7 @@ func (s *Service) init(level string, logPath string) {
 	defer s.log.Sync()
 }
 
+//Printf method for elastic search
 func (s *Service) Printf(format string, v...interface{}) {
 	if len(v) == 0{
 		s.Info(format)
@@ -79,26 +80,36 @@ func (s *Service) Printf(format string, v...interface{}) {
 	}
 }
 
+//Print method for mysql
+func (s *Service) Print(v...interface{}) {
+	s.Info(fmt.Sprintf("%v", v...))
+}
+
+//SetLogLevel method to change log level
 func (s *Service) SetLogLevel(level string) {
 	logConfig.Level.SetLevel(s.mapToZapLevels(level))
 	s.log.Sync()
 }
 
+//Info generic
 func (s *Service) Info(msg string, tags ...string) {
 	s.log.Info(msg, s.parseFields(nil, tags...)...)
 	s.log.Sync()
 }
 
+//Warn generic
 func (s *Service) Warn(msg string, tags ...string) {
 	s.log.Warn(msg, s.parseFields(nil, tags...)...)
 	s.log.Sync()
 }
 
+//Debug generic
 func (s *Service) Debug(msg string, tags ...string) {
 	s.log.Debug(msg, s.parseFields(nil, tags...)...)
 	s.log.Sync()
 }
 
+//Error generic
 func (s *Service) Error(msg string, err error, tags ...string) {
 	s.log.Error(msg, s.parseFields(err, tags...)...)
 	s.log.Sync()

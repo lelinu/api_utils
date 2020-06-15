@@ -1,8 +1,6 @@
 package lzap
 
 import (
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -16,19 +14,24 @@ func init() {
 	logger = NewService("info", "access.log")
 }
 
-func getCurrentDirectory() string {
-	ex, _ := os.Executable()
-	return filepath.Dir(ex)
-}
-
 //TestPrintfWithTagsSuccessful will test the logger
 func TestPrintfWithTagsSuccessful(t *testing.T) {
-	logger.Printf("This is a message", "client:123456")
+	logger.Printf("This is a message %v", "client:123456")
 }
 
 //TestPrintfWithoutTagsSuccessful will test the logger
 func TestPrintfWithoutTagsSuccessful(t *testing.T) {
 	logger.Printf("This is a message")
+}
+
+//TestPrintWithTagsSuccessful will test the logger
+func TestPrintWithTagsSuccessful(t *testing.T) {
+	logger.Print("This is a message", "client:123456", "user:123456")
+}
+
+//TestPrintfWithoutTagsSuccessful will test the logger
+func TestPrintWithoutTagsSuccessful(t *testing.T) {
+	logger.Print("This is a message")
 }
 
 //TestLogInfoWithTagsSuccessful will test the logger
