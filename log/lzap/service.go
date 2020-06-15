@@ -1,6 +1,7 @@
 package lzap
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 	"runtime"
@@ -68,6 +69,14 @@ func (s *Service) init(level string, logPath string) {
 	s.log = log
 
 	defer s.log.Sync()
+}
+
+func (s *Service) Printf(format string, v...interface{}) {
+	if len(v) == 0{
+		s.Info(format)
+	}else{
+		s.Info(fmt.Sprintf(format, v...))
+	}
 }
 
 func (s *Service) SetLogLevel(level string) {

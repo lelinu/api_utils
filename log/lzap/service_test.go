@@ -21,6 +21,16 @@ func getCurrentDirectory() string {
 	return filepath.Dir(ex)
 }
 
+//TestPrintfWithTagsSuccessful will test the logger
+func TestPrintfWithTagsSuccessful(t *testing.T) {
+	logger.Printf("This is a message", "client:123456")
+}
+
+//TestPrintfWithoutTagsSuccessful will test the logger
+func TestPrintfWithoutTagsSuccessful(t *testing.T) {
+	logger.Printf("This is a message")
+}
+
 //TestLogInfoWithTagsSuccessful will test the logger
 func TestLogInfoWithTagsSuccessful(t *testing.T) {
 	logger.Info("This is a message", "client:123456")
