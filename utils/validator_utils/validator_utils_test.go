@@ -623,3 +623,96 @@ func TestDateMustNotBeInFutureValidSuccessful(t *testing.T){
 	assert.Nil(t, validator.Err)
 }
 
+/// NEW
+func TestIsValidBsonIDSuccessful(t *testing.T){
+	// arrange
+	propName := "BisonID"
+	input := "5ec521f6ef2a8c1b38915a89"
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsValidBsonID(propName, input)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+func TestIsInvalidBsonIDSuccessful(t *testing.T){
+	// arrange
+	propName := "BisonID"
+	input := "5ec521f6ef2a8c1b3"
+	expectedErr := "BisonID - Value must be a valid bson object ID"
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsValidBsonID(propName, input)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
+
+func TestIsValid2SegmentAPIKeySuccessful(t *testing.T){
+	// arrange
+	propName := "Apikey"
+	input := "5ee359cda598250001057442.Mjg2YjYxNWItNjI0Zi00NzU3LThjMGEtYTE0ZmFjMDY4NTI2"
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsValid2SegmentAPIKey(propName, input)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+func TestIsInvalid2SegmentAPIKeySuccessful(t *testing.T){
+	// arrange
+	propName := "Apikey"
+	input := "5ee359cda598250001057442"
+	expectedErr := "Apikey - Value must be in the format of abc123.abc123"
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsValid2SegmentAPIKey(propName, input)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
+
+func TestIsNotEmptyStringArraySuccessful(t *testing.T){
+	// arrange
+	propName := "Array"
+	input := []string{"value"}
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsNotEmptyStringArray(propName, input)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+func TestIsNotEmptyStringArrayNotSuccessful(t *testing.T){
+	// arrange
+	propName := "Array"
+	input := make([]string, 0)
+	expectedErr := "Array - Value must not be an empty array"
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsNotEmptyStringArray(propName, input)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
