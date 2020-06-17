@@ -2,6 +2,7 @@ package validator_utils
 
 import (
 	"fmt"
+	"gopkg.in/mgo.v2/bson"
 	"net/url"
 	"regexp"
 	"strings"
@@ -15,12 +16,13 @@ type Validator struct {
 }
 
 var (
-	regexAlphaDash      = regexp.MustCompile(`^[a-zA-Z0-9-]+$`)
-	regexAlphaDashSpace = regexp.MustCompile(`^[a-zA-Z0-9- ]+$`)
-	regexEmail          = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}$`)
+	regexAlphaDash              = regexp.MustCompile(`^[a-zA-Z0-9-]+$`)
+	regexAlphaDashSpace         = regexp.MustCompile(`^[a-zA-Z0-9- ]+$`)
+	regexEmail                  = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}$`)
+	regex2SegmentAPIKeyStandard = regexp.MustCompile(`^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$`)
 )
 
-func NewValidator() *Validator{
+func NewValidator() *Validator {
 	return &Validator{}
 }
 
@@ -295,6 +297,48 @@ func (v *Validator) DateMustNotBeInFuture(propertyName string, value time.Time) 
 
 	if value.Sub(time.Now().UTC()) > 0 {
 		v.Err = fmt.Errorf("%s - Value cannot be in the future", propertyName)
+		return false
+	}
+
+	return true
+}
+
+//IsValidBsonID method to check whether string is a valid mongo bson ID
+func (v *Validator) IsValidBsonID(propertyName string, value string) bool {
+	if v.Err != nil {
+		return false
+	}
+
+	if value != "" && !bson.IsObjectIdHex(value) {
+		v.Err = fmt.Errorf("%s - Value must be a valid bson object ID", propertyName)
+		return false
+	}
+
+	return true
+}
+
+//IsValid2StepAPIKey method to check whether string is a valid api key containing 2 segments
+func (v *Validator) IsValid2SegmentAPIKey(propertyName string, value string) bool {
+	if v.Err != nil {
+		return false
+	}
+
+	// check if input is alpha
+	if value != "" && !regex2SegmentAPIKeyStandard.MatchString(value) {
+		v.Err = fmt.Errorf("%s - Value must be in the format of abc123.abc123", propertyName)
+		return false
+	}
+	return true
+}
+
+//IsNotEmptyStringArray method to check if string array has any elements in it
+func (v *Validator) IsNotEmptyStringArray(propertyName string, value []string) bool {
+	if v.Err != nil {
+		return false
+	}
+
+	if len(value) == 0 {
+		v.Err = fmt.Errorf("%s - Value must not be an empty array", propertyName)
 		return false
 	}
 
