@@ -296,6 +296,40 @@ func TestMustBeGreaterThanValidSuccessful(t *testing.T){
 	assert.Nil(t, validator.Err)
 }
 
+func TestMustBeGreaterFloat64ThanInvalidSuccessful(t *testing.T){
+	// arrange
+	propName := "MustBeGreaterThan"
+	input := 9.0
+	high := 10.0
+	expectedErr := "MustBeGreaterThan - Value must be greater than 10"
+
+	// act
+	validator := NewValidator()
+	valid := validator.MustBeGreaterThanFloat64(propName, high, input)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
+
+func TestMustBeGreaterFloat64ThanValidSuccessful(t *testing.T){
+	// arrange
+	propName := "MustBeGreaterThan"
+	input := 11.0
+	high := 10.0
+
+	// act
+	validator := NewValidator()
+	valid := validator.MustBeGreaterThanFloat64(propName, high, input)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+
 func TestContainsOptionalInvalidSuccessful(t *testing.T){
 	// arrange
 	propName := "ContainsOptional"
@@ -358,6 +392,81 @@ func TestContainsRequiredEmptyValueSuccessful(t *testing.T){
 	// act
 	validator := NewValidator()
 	valid := validator.Contains(propName, input, allowedList, false)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
+
+func TestContainsListOptionalInvalidSuccessful(t *testing.T){
+	// arrange
+	propName := "ContainsListOptional"
+	inputtedList := make([]string, 0)
+	inputtedList = append(inputtedList, "Test")
+
+	allowedList := make([]string, 0)
+	allowedList = append(allowedList, "Golang")
+	expectedErr := "ContainsListOptional - Value is not in the allowed list: Golang"
+
+	// act
+	validator := NewValidator()
+	valid := validator.ContainsList(propName, inputtedList, allowedList, true)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
+
+func TestContainsListOptionalValidSuccessful(t *testing.T){
+	// arrange
+	propName := "ContainsListOptional"
+	inputtedList := make([]string, 0)
+	inputtedList = append(inputtedList, "Golang")
+
+	allowedList := make([]string, 0)
+	allowedList = append(allowedList, "Golang")
+
+	// act
+	validator := NewValidator()
+	valid := validator.ContainsList(propName, inputtedList, allowedList, true)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+func TestContainsListOptionalEmptyValueSuccessful(t *testing.T){
+	// arrange
+	propName := "ContainsOptional"
+	inputtedList := make([]string, 0)
+	allowedList := make([]string, 0)
+	allowedList = append(allowedList, "Golang")
+
+	// act
+	validator := NewValidator()
+	valid := validator.ContainsList(propName, inputtedList, allowedList, true)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+func TestContainsListRequiredEmptyValueSuccessful(t *testing.T){
+	// arrange
+	propName := "ContainsListOptional"
+	inputtedList := make([]string, 0)
+
+	allowedList := make([]string, 0)
+	allowedList = append(allowedList, "Golang")
+	expectedErr := "ContainsListOptional - Value must not be empty"
+
+	// act
+	validator := NewValidator()
+	valid := validator.ContainsList(propName, inputtedList, allowedList, false)
 
 	// assert
 	assert.EqualValues(t, false, valid)

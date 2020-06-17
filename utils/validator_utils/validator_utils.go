@@ -162,6 +162,37 @@ func (v *Validator) MustBeGreaterThan(propertyName string, high, value int) bool
 	return true
 }
 
+//MustBeGreaterThanFloat64 method to check whether value is greater than
+func (v *Validator) MustBeGreaterThanFloat64(propertyName string, high, value float64) bool {
+	if v.Err != nil {
+		return false
+	}
+	if value <= high {
+		v.Err = fmt.Errorf("%s - Value must be greater than %v", propertyName, high)
+		return false
+	}
+	return true
+}
+
+//ContainsList method to check where list is in allowed list
+func (v *Validator) ContainsList(propertyName string, list []string, allowedList []string, optional bool) bool {
+
+	if optional == false && len(list) == 0 {
+		v.Err = fmt.Errorf("%s - Value must not be empty", propertyName)
+		return false
+	}
+
+	for _, l := range list {
+		val := v.Contains(propertyName, l, allowedList, optional)
+		if val == false {
+			v.Err = fmt.Errorf("%s - Value is not in the allowed list: %s", propertyName, strings.Join(allowedList, ","))
+			return false
+		}
+	}
+
+	return true
+}
+
 //Contains method to check if allowed list contains the inputted value
 func (v *Validator) Contains(propertyName string, value string, allowedList []string, optional bool) bool {
 
