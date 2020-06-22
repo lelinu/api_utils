@@ -48,7 +48,7 @@ func NewServiceMock(bucket string, folderName string, region string,
 }
 
 //UploadFile this method will upload file to s3 bucket
-func (a *Service) UploadFile(fileName string, fileData []byte) (string, string, error) {
+func (a *Service) UploadFile(fileName string, fileData []byte) (string, string, *error_utils.ApiError) {
 
 	// convert to reader
 	r := bytes.NewReader(fileData)
@@ -63,14 +63,14 @@ func (a *Service) UploadFile(fileName string, fileData []byte) (string, string, 
 
 	// give some information to the user if an error occurs
 	if err != nil {
-		return "", "", fmt.Errorf("cloudStorage: UploadFile :Unable to upload %v to %v, %v", fileName, a.bucket, err)
+		return "", "", error_utils.NewInternalServerError(fmt.Sprintf("cloudStorage: UploadFile :Unable to upload %v to %v, %v", fileName, a.bucket, err))
 	}
 
 	return key, output.Location, nil
 }
 
 //DownloadFile this method will download a file from s3 bucket
-func (a *Service) DownloadFile(fileKey string) ([]byte, error) {
+func (a *Service) DownloadFile(fileKey string) ([]byte,  *error_utils.ApiError) {
 
 	// build request
 	requestInput := &s3.GetObjectInput{
@@ -84,7 +84,7 @@ func (a *Service) DownloadFile(fileKey string) ([]byte, error) {
 	// download
 	_, err := a.downloader.Download(buf, requestInput)
 	if err != nil {
-		return nil, fmt.Errorf("cloudStorage: DownloadFile : Unable to download %v from %v, %v", fileKey, a.bucket, err)
+		return nil, error_utils.NewInternalServerError(fmt.Sprintf("cloudStorage: DownloadFile : Unable to download %v from %v, %v", fileKey, a.bucket, err))
 	}
 
 	return buf.Bytes(), nil

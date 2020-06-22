@@ -53,9 +53,9 @@ func TestUploadFileValid(t *testing.T) {
 	assert.Nil(t, apiErr)
 	assert.NotNil(t, service)
 
-	fileKey, objectURL, err := service.UploadFile("Capture.JPG", dat)
+	fileKey, objectURL, apiErr := service.UploadFile("Capture.JPG", dat)
 
-	assert.Nil(t, err)
+	assert.Nil(t, apiErr)
 	assert.NotNil(t, fileKey)
 	assert.EqualValues(t, "uploads/Capture.JPG", fileKey)
 	assert.NotNil(t, objectURL)
@@ -78,10 +78,10 @@ func TestUploadFileInvalid(t *testing.T) {
 	assert.Nil(t, apiErr)
 	assert.NotNil(t, service)
 
-	fileKey, objectURL, err := service.UploadFile("Capture.JPG", dat)
+	fileKey, objectURL, apiErr := service.UploadFile("Capture.JPG", dat)
 
-	assert.NotNil(t, err)
-	assert.EqualValues(t, "cloudStorage: UploadFile :Unable to upload Capture.JPG to dev-test, invalid bucket name", err.Error())
+	assert.NotNil(t, apiErr)
+	assert.EqualValues(t, "cloudStorage: UploadFile :Unable to upload Capture.JPG to dev-test, invalid bucket name", apiErr.ErrorMessage)
 	assert.EqualValues(t, "", fileKey)
 	assert.EqualValues(t, "", objectURL)
 }
@@ -119,7 +119,7 @@ func TestDownloadFileInvalid(t *testing.T) {
 	bytes, err := service.DownloadFile("Capture.JPG")
 
 	assert.NotNil(t, err)
-	assert.EqualValues(t, "cloudStorage: DownloadFile : Unable to download Capture.JPG from dev-test, file not found", err.Error())
+	assert.EqualValues(t, "cloudStorage: DownloadFile : Unable to download Capture.JPG from dev-test, file not found", err.ErrorMessage)
 	assert.Nil(t, bytes)
 }
 
