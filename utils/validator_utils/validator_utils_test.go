@@ -296,7 +296,7 @@ func TestMustBeGreaterThanValidSuccessful(t *testing.T){
 	assert.Nil(t, validator.Err)
 }
 
-func TestMustBeGreaterFloat64ThanInvalidSuccessful(t *testing.T){
+func TestMustBeGreaterThanFloat64InvalidSuccessful(t *testing.T){
 	// arrange
 	propName := "MustBeGreaterThan"
 	input := 9.0
@@ -314,7 +314,7 @@ func TestMustBeGreaterFloat64ThanInvalidSuccessful(t *testing.T){
 	assert.EqualValues(t, false, validator.IsValid())
 }
 
-func TestMustBeGreaterFloat64ThanValidSuccessful(t *testing.T){
+func TestMustBeGreaterThanFloat64ValidSuccessful(t *testing.T){
 	// arrange
 	propName := "MustBeGreaterThan"
 	input := 11.0
@@ -329,6 +329,38 @@ func TestMustBeGreaterFloat64ThanValidSuccessful(t *testing.T){
 	assert.Nil(t, validator.Err)
 }
 
+func TestMustBeGreaterThanInt64InvalidSuccessful(t *testing.T){
+	// arrange
+	propName := "MustBeGreaterThan"
+	var input int64 = 9
+	var high int64 = 10
+	expectedErr := "MustBeGreaterThan - Value must be greater than 10"
+
+	// act
+	validator := NewValidator()
+	valid := validator.MustBeGreaterThanInt64(propName, high, input)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
+
+func TestMustBeGreaterThanInt64ValidSuccessful(t *testing.T){
+	// arrange
+	propName := "MustBeGreaterThan"
+	var input int64 = 11
+	var high int64 = 10
+
+	// act
+	validator := NewValidator()
+	valid := validator.MustBeGreaterThanInt64(propName, high, input)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
 
 func TestContainsOptionalInvalidSuccessful(t *testing.T){
 	// arrange

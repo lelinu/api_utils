@@ -174,6 +174,18 @@ func (v *Validator) MustBeGreaterThanFloat64(propertyName string, high, value fl
 	return true
 }
 
+//MustBeGreaterThanInt64 method to check whether value is greater than
+func (v *Validator) MustBeGreaterThanInt64(propertyName string, high, value int64) bool {
+	if v.Err != nil {
+		return false
+	}
+	if value <= high {
+		v.Err = fmt.Errorf("%s - Value must be greater than %v", propertyName, high)
+		return false
+	}
+	return true
+}
+
 //ContainsList method to check where list is in allowed list
 func (v *Validator) ContainsList(propertyName string, list []string, allowedList []string, optional bool) bool {
 
