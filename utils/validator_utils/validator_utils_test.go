@@ -857,3 +857,33 @@ func TestIsNotEmptyStringArrayNotSuccessful(t *testing.T){
 	assert.EqualValues(t, expectedErr, validator.Err.Error())
 	assert.EqualValues(t, false, validator.IsValid())
 }
+
+func TestAtLeastOneIsTrueSuccessful(t *testing.T){
+	// arrange
+	propName := "IsOver18,CanShare"
+
+	// act
+	validator := NewValidator()
+	valid := validator.AtLeastOneIsTrue(propName, true, false)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+func TestAtLeastOneIsTrueNotSuccessful(t *testing.T){
+
+	// arrange
+	propName := "IsOver18,CanShare"
+	expectedErr := "IsOver18,CanShare - One of the values must be true"
+
+	// act
+	validator := NewValidator()
+	valid := validator.AtLeastOneIsTrue(propName, false, false)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}

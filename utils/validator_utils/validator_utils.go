@@ -388,6 +388,22 @@ func (v *Validator) IsNotEmptyStringArray(propertyName string, value []string) b
 	return true
 }
 
+//AtLeastOneIsTrue method to check if at least one of the variadic parameters is true
+func (v *Validator) AtLeastOneIsTrue(propertyName string, values ...bool) bool{
+	if v.Err != nil {
+		return false
+	}
+
+	for _, value := range values {
+		if value {
+			return value
+		}
+	}
+
+	v.Err = fmt.Errorf("%s - One of the values must be true", propertyName)
+	return false
+}
+
 //IsValid method to check that all the sub methods called are valid
 func (v *Validator) IsValid() bool {
 	return v.Err == nil
