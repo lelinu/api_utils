@@ -20,6 +20,23 @@ func TestGenerateHashFromStringSuccessful(t *testing.T){
 	assert.EqualValues(t, expectedHashLength, len(hashedInput))
 }
 
+func TestCompareHashWithClearPasswordSuccessful(t *testing.T){
+	//arrange
+	var input = "my-input"
+	var expectedHashLength = 60
+
+	//act
+	hashedInput, err := GenerateHashFromString(input)
+
+	//assert
+	assert.Nil(t, err)
+	assert.NotNil(t, hashedInput)
+	assert.EqualValues(t, expectedHashLength, len(hashedInput))
+
+	err = CompareHashWithClearPassword(hashedInput, input)
+	assert.Nil(t, err)
+}
+
 func TestGenerateHashAndSaltKeyFromInputSuccessful(t *testing.T){
 
 	//arrange

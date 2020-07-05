@@ -16,6 +16,15 @@ func GenerateHashFromString(input string) (string, error) {
 	return string(hashedInput), nil
 }
 
+func CompareHashWithClearPassword(hash string, clearPassword string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(clearPassword))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GenerateHashAndSaltKeyFromInput(input string) (string, string, error) {
 
 	newSalt, err := random_utils.NewUUID()
