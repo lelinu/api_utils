@@ -4,6 +4,11 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io"
+	"math/big"
+)
+
+var (
+	letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 )
 
 func NewUUID() (string, error) {
@@ -19,4 +24,16 @@ func NewUUID() (string, error) {
 	return fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:]), nil
 }
 
-
+func NewRandomString(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		max := *big.NewInt(int64(len(letters)))
+		r, err := rand.Int(rand.Reader, &max)
+		if err != nil {
+			b[i] = letters[0]
+		} else {
+			b[i] = letters[r.Int64()]
+		}
+	}
+	return string(b)
+}
