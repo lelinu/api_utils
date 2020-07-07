@@ -139,7 +139,7 @@ func (s *Service) parseFields(err error, tags ...string) []zap.Field {
 
 	result = make([]zap.Field, length)
 	for i, tag := range tags {
-		els := strings.Split(tag, ":")
+		els := strings.Split(tag, ":=")
 		result[i] = zap.Field{
 			Key:    els[0],
 			String: els[1],

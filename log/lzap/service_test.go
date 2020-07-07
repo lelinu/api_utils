@@ -16,7 +16,7 @@ func init() {
 
 //TestPrintfWithTagsSuccessful will test the logger
 func TestPrintfWithTagsSuccessful(t *testing.T) {
-	logger.Printf("This is a message %v", "client:123456")
+	logger.Printf("This is a message %v", "client:=123456")
 }
 
 //TestPrintfWithoutTagsSuccessful will test the logger
@@ -26,7 +26,7 @@ func TestPrintfWithoutTagsSuccessful(t *testing.T) {
 
 //TestPrintWithTagsSuccessful will test the logger
 func TestPrintWithTagsSuccessful(t *testing.T) {
-	logger.Print("This is a message", "client:123456", "user:123456")
+	logger.Print("This is a message", "client:123456", "user:=123456")
 }
 
 //TestPrintfWithoutTagsSuccessful will test the logger
@@ -36,7 +36,7 @@ func TestPrintWithoutTagsSuccessful(t *testing.T) {
 
 //TestLogInfoWithTagsSuccessful will test the logger
 func TestLogInfoWithTagsSuccessful(t *testing.T) {
-	logger.Info("This is a message", "client:123456")
+	logger.Info("This is a message", "client:=123456")
 }
 
 //TestLogInfoWithoutTagsSuccessful will test the logger
@@ -46,7 +46,7 @@ func TestLogInfoWithoutTagsSuccessful(t *testing.T) {
 
 //TestLogWarnWithTagsSuccessful will test the logger
 func TestLogWarnWithTagsSuccessful(t *testing.T) {
-	logger.Warn("This is a warning message", "client:123456")
+	logger.Warn("This is a warning message", "client:=123456")
 }
 
 //TestLogWarnWithTagsSuccessful will test the logger
@@ -56,7 +56,7 @@ func TestLogWarnWithoutTagsSuccessful(t *testing.T) {
 
 //TestLogDebugWithTagsSuccessful will test the logger
 func TestLogDebugWithTagsSuccessful(t *testing.T) {
-	logger.Debug("This is a debug message", "client:123456")
+	logger.Debug("This is a debug message", "client:=123456")
 }
 
 //TestLogDebugWithoutTagsSuccessful will test the logger
@@ -66,7 +66,7 @@ func TestLogDebugWithoutTagsSuccessful(t *testing.T) {
 
 //TestLogErrorWithTagsSuccessful will test the logger
 func TestLogErrorWithTagsSuccessful(t *testing.T) {
-	logger.Error("This is an error message", errors.New("oops an error message"), "client:123456")
+	logger.Error("This is an error message", errors.New("oops an error message"), "client:=123456")
 }
 
 //TestLogErrorWithoutTagsSuccessful will test the logger
@@ -77,6 +77,6 @@ func TestLogErrorWithoutTagsSuccessful(t *testing.T) {
 //BenchmarkLogInfo will benchmark the functionality
 func BenchmarkLogInfo(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		logger.Info("This is a message", "client:123456")
+		logger.Info("This is a message", "client:=123456")
 	}
 }
