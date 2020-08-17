@@ -18,7 +18,7 @@ type Validator struct {
 var (
 	regexAlphaDash              = regexp.MustCompile(`^[a-zA-Z0-9-]+$`)
 	regexAlphaDashSpace         = regexp.MustCompile(`^[a-zA-Z0-9- ]+$`)
-	regexEmail                  = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}$`)
+	regexEmail                  = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 	regex2SegmentAPIKeyStandard = regexp.MustCompile(`^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$`)
 )
 
