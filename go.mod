@@ -3,6 +3,7 @@ module github.com/lelinu/api_utils
 go 1.13
 
 require (
+	cloud.google.com/go/storage v1.6.0
 	github.com/aws/aws-sdk-go v1.31.7
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
