@@ -4,12 +4,21 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-//Pagination struct
+//pagination struct
 type Pagination struct {
 	DB      *gorm.DB
 	OrderBy []string
 	Page    int64
 	PerPage int64
+}
+
+func NewPagination(db *gorm.DB, orderBy []string, page int64, perPage int64) *Pagination{
+	return &Pagination{
+		DB:      db,
+		OrderBy: orderBy,
+		Page:    page,
+		PerPage: perPage,
+	}
 }
 
 //PaginationResult struct
