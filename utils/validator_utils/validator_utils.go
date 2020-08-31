@@ -277,10 +277,15 @@ func (v *Validator) IsNotNil(propertyName string, value interface{}) bool {
 }
 
 //IsValidEmail method to check if inputted value is an actual email
-func (v *Validator) IsValidEmail(propertyName string, email string) bool {
+func (v *Validator) IsValidEmail(propertyName string, email string, optional bool) bool {
 
 	if v.Err != nil {
 		return false
+	}
+
+	// can be optional
+	if optional == true && email == "" {
+		return true
 	}
 
 	if email == "" {

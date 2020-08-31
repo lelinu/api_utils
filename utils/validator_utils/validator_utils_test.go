@@ -612,7 +612,7 @@ func TestIsValidEmailInvalidSuccessful(t *testing.T){
 
 	// act
 	validator := NewValidator()
-	valid := validator.IsValidEmail(propName, input)
+	valid := validator.IsValidEmail(propName, input, false)
 
 	// assert
 	assert.EqualValues(t, false, valid)
@@ -628,7 +628,7 @@ func TestIsValidEmailValidSuccessful(t *testing.T){
 
 	// act
 	validator := NewValidator()
-	valid := validator.IsValidEmail(propName, input)
+	valid := validator.IsValidEmail(propName, input, false)
 
 	// assert
 	assert.EqualValues(t, true, valid)
