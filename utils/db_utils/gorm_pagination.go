@@ -23,10 +23,10 @@ func NewPagination(db *gorm.DB, orderBy []string, page int64, perPage int64) *Pa
 
 //PaginationResult struct
 type PaginationResult struct {
-	TotalRecords int64       `json:"totalRecords"`
+	TotalRecords int64       `json:"total_records"`
 	Records      interface{} `json:"records"`
-	CurrentPage  int64       `json:"currentPage"`
-	TotalPages   int64       `json:"totalPages"`
+	CurrentPage  int64       `json:"current_page"`
+	TotalPages   int64       `json:"total_pages"`
 }
 
 //Paginate function
