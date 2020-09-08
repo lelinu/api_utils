@@ -12,7 +12,7 @@ type Pagination struct {
 	PerPage int64
 }
 
-func NewPagination(db *gorm.DB, orderBy []string, page int64, perPage int64) *Pagination{
+func NewPagination(db *gorm.DB, orderBy []string, page int64, perPage int64) *Pagination {
 	return &Pagination{
 		DB:      db,
 		OrderBy: orderBy,
@@ -23,7 +23,7 @@ func NewPagination(db *gorm.DB, orderBy []string, page int64, perPage int64) *Pa
 
 //PaginationResult struct
 type PaginationResult struct {
-	TotalRecords int         `json:"totalRecords"`
+	TotalRecords int64       `json:"totalRecords"`
 	Records      interface{} `json:"records"`
 	CurrentPage  int64       `json:"currentPage"`
 	TotalPages   int64       `json:"totalPages"`
@@ -41,7 +41,7 @@ func (p *Pagination) Paginate(dataSource interface{}) *PaginationResult {
 
 	done := make(chan bool, 1)
 	var output PaginationResult
-	var count int
+	var count int64
 	var offset int64
 
 	go countRecords(db, dataSource, done, &count)
@@ -65,12 +65,12 @@ func (p *Pagination) Paginate(dataSource interface{}) *PaginationResult {
 	return &output
 }
 
-func countRecords(db *gorm.DB, countDataSource interface{}, done chan bool, count *int) {
+func countRecords(db *gorm.DB, countDataSource interface{}, done chan bool, count *int64) {
 	db.Model(countDataSource).Count(count)
 	done <- true
 }
 
-func getTotalPages(perPage int64, totalRecords int) int64 {
+func getTotalPages(perPage int64, totalRecords int64) int64 {
 	totalPages := float64(totalRecords) / float64(perPage)
 	return int64(totalPages)
 }
