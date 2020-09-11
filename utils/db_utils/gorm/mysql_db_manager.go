@@ -1,4 +1,4 @@
-package db_utils
+package gorm
 
 import (
 	"database/sql"
