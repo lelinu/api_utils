@@ -12,8 +12,8 @@ import (
 	"github.com/qor/validations"
 )
 
-const DatabaseLogProcess = "database"
 const (
+	DatabaseLogProcess            = "database"
 	DefaultMigrationsFolder       = "migrations/mysql"
 	DefaultMaxIdleConnections     = 10
 	DefaultMaxOpenConnections     = 50
@@ -21,7 +21,7 @@ const (
 	DefaultRetries                = 10
 )
 
-type IDbManager interface{
+type IDbManager interface {
 	SetMigrationsFolder(migrationsFolder string)
 	SetConfigurations(maxIdleConnections, maxOpenConnections, connMaxLifetimeSeconds, dbRetries int)
 	Init(logMode, autoMigrate bool) error
@@ -42,12 +42,12 @@ type DbManager struct {
 	Session *gorm.DB
 }
 
-// NewDbManager constructor to setup the basic requirements of a DbManager
-func NewDbManager(logger llogrus.IService, databaseURL, databaseName string) IDbManager {
+// NewMySqlDbManager constructor to setup the basic requirements of a DbManager
+func NewMySqlDbManager(logger llogrus.IService, databaseURL, databaseName string) IDbManager {
 	return &DbManager{
-		Logger:                 logger,
-		DatabaseURL:            databaseURL,
-		DatabaseName:           databaseName,
+		Logger:       logger,
+		DatabaseURL:  databaseURL,
+		DatabaseName: databaseName,
 	}
 }
 
@@ -167,7 +167,7 @@ func (dbm *DbManager) setConfigurations() {
 	}
 
 	dbm.Logger.Info("setting connection configurations", fmt.Sprintf("process:%v,max idle connections:%v,max open connections:%v, connection max lifetime seconds:%v", DatabaseLogProcess,
-		dbm.MaxIdleConnections, dbm.MaxOpenConnections,  dbm.ConnMaxLifetimeSeconds))
+		dbm.MaxIdleConnections, dbm.MaxOpenConnections, dbm.ConnMaxLifetimeSeconds))
 
 	// Set connection configuration variables
 	dbm.Session.DB().SetMaxIdleConns(dbm.MaxIdleConnections)
