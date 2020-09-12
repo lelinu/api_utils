@@ -858,6 +858,37 @@ func TestIsNotEmptyStringArrayNotSuccessful(t *testing.T){
 	assert.EqualValues(t, false, validator.IsValid())
 }
 
+func TestIsNotEmptyInt64ArraySuccessful(t *testing.T){
+	// arrange
+	propName := "Array"
+	input := []int64{1}
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsNotEmptyInt64Array(propName, input)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+func TestIsNotEmptyInt64ArrayNotSuccessful(t *testing.T){
+	// arrange
+	propName := "Array"
+	input := make([]int64, 0)
+	expectedErr := "Array - Value must not be an empty array"
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsNotEmptyInt64Array(propName, input)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
+
 func TestAtLeastOneIsTrueSuccessful(t *testing.T){
 	// arrange
 	propName := "IsOver18,CanShare"

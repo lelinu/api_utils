@@ -380,12 +380,26 @@ func (v *Validator) IsValid2SegmentAPIKey(propertyName string, value string) boo
 }
 
 //IsNotEmptyStringArray method to check if string array has any elements in it
-func (v *Validator) IsNotEmptyStringArray(propertyName string, value []string) bool {
+func (v *Validator) IsNotEmptyStringArray(propertyName string, values []string) bool {
 	if v.Err != nil {
 		return false
 	}
 
-	if len(value) == 0 {
+	if len(values) == 0 {
+		v.Err = fmt.Errorf("%s - Value must not be an empty array", propertyName)
+		return false
+	}
+
+	return true
+}
+
+//IsNotEmptyInt64Array method to check if string array has any elements in it
+func (v *Validator) IsNotEmptyInt64Array(propertyName string, values []int64) bool {
+	if v.Err != nil {
+		return false
+	}
+
+	if len(values) == 0 {
 		v.Err = fmt.Errorf("%s - Value must not be an empty array", propertyName)
 		return false
 	}
