@@ -7,20 +7,21 @@ import (
 )
 
 type Service struct {
-	Host     string
-	Port     int
-	Username string
-	Password string
+	Host       string
+	Port       int
+	SenderName string
+	Username   string
+	Password   string
 }
 
-func NewService(host string, port int, username string, password string) IService {
-	return &Service{Host: host, Port: port, Username: username, Password: password}
+func NewService(host string, port int, senderName string, username string, password string) IService {
+	return &Service{Host: host, Port: port, SenderName: senderName, Username: username, Password: password}
 }
 
 func (s *Service) Send(toList string, subject string, htmlBody string) *error_utils.ApiError {
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", s.Username)
+	m.SetAddressHeader("From", s.Username, s.SenderName)
 	m.SetHeader("To", toList)
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", htmlBody)
