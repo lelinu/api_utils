@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -37,6 +38,20 @@ func (v *Validator) IsNotEmpty(propertyName string, value string) bool {
 
 	if strValue == "" {
 		v.Err = fmt.Errorf("%s - Value must not be empty", propertyName)
+		return false
+	}
+	return true
+}
+
+//IsNumeric method to check if input is numeric
+func (v *Validator) IsNumeric(propertyName string, value string) bool {
+	if v.Err != nil {
+		return false
+	}
+
+	_, err := strconv.ParseFloat(value, 64)
+	if err != nil{
+		v.Err = fmt.Errorf("%s - Value must be numeric", propertyName)
 		return false
 	}
 	return true

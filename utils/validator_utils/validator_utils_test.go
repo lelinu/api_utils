@@ -54,6 +54,37 @@ func TestIsNotEmptyValidSuccessful(t *testing.T){
 	assert.Nil(t, validator.Err)
 }
 
+func TestIsNumericValidSuccessful(t *testing.T){
+	// arrange
+	propName := "PropName"
+	input := "12345"
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsNumeric(propName, input)
+
+	// assert
+	assert.EqualValues(t, true, valid)
+	assert.Nil(t, validator.Err)
+}
+
+func TestIsNumericInValidSuccessful(t *testing.T){
+	// arrange
+	propName := "PropName"
+	input := "Hello world"
+	expectedErr := "PropName - Value must be numeric"
+
+	// act
+	validator := NewValidator()
+	valid := validator.IsNumeric(propName, input)
+
+	// assert
+	assert.EqualValues(t, false, valid)
+	assert.NotNil(t, validator.Err)
+	assert.EqualValues(t, expectedErr, validator.Err.Error())
+	assert.EqualValues(t, false, validator.IsValid())
+}
+
 func TestIsAlphaDashWithSpaceSuccessful(t *testing.T){
 	// arrange
 	propName := "PropName"
