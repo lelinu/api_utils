@@ -23,10 +23,10 @@ type Service struct {
 // NewService this method will return a new instance of Jwt Service
 // Currently this service only supports HMAC signing
 func NewService(signingAlgorithm string, jwtSecretKey string, issuer string,
-	timeoutInHours time.Duration, maxRefreshInHours time.Duration) (*Service, *error_utils.ApiError) {
+	timeoutInMinutes time.Duration, maxRefreshInMinutes time.Duration) (*Service, *error_utils.ApiError) {
 	var service = &Service{}
 
-	err := service.init(signingAlgorithm, jwtSecretKey, issuer, timeoutInHours, maxRefreshInHours)
+	err := service.init(signingAlgorithm, jwtSecretKey, issuer, timeoutInMinutes, maxRefreshInMinutes)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func NewService(signingAlgorithm string, jwtSecretKey string, issuer string,
 
 //init will initialize defaults and validate parameters
 func (a *Service) init(signingAlgorithm string, jwtSecretKey string, issuer string,
-	timeoutInHours time.Duration, maxRefreshInHours time.Duration) *error_utils.ApiError {
+	timeoutInMinutes time.Duration, maxRefreshInMinutes time.Duration) *error_utils.ApiError {
 
 	// validations
 	// validate signing algorithm
@@ -50,7 +50,7 @@ func (a *Service) init(signingAlgorithm string, jwtSecretKey string, issuer stri
 	}
 
 	// validate max refresh
-	if maxRefreshInHours <= 0 {
+	if maxRefreshInMinutes <= 0 {
 		return error_utils.NewBadRequestError("Auth: max refresh should be greater than 0")
 	}
 
@@ -63,12 +63,12 @@ func (a *Service) init(signingAlgorithm string, jwtSecretKey string, issuer stri
 	a.signingAlgorithm = signingAlgorithm
 	a.jwtSecretKey = []byte(jwtSecretKey)
 	a.issuer = issuer
-	a.maxRefresh = maxRefreshInHours
+	a.maxRefresh = maxRefreshInMinutes
 
 	// set defaults
 	a.timeFunc = time.Now
 	if a.timeout <= 0 {
-		a.timeout = time.Hour * timeoutInHours
+		a.timeout = time.Minute * timeoutInMinutes
 	}
 	// set defaults
 
