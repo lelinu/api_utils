@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -149,6 +148,7 @@ func TestValidateJwtTokenInvalidIssuer(t *testing.T) {
 	assert.Nil(t, err)
 
 	claims, err := vService.ValidateJwtToken(token)
+
 	assert.NotNil(t, err)
 	assert.EqualValues(t, "Invalid issuer", err.ErrorMessage)
 	assert.Nil(t, claims)

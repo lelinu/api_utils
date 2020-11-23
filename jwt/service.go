@@ -133,7 +133,7 @@ func (a *Service) ValidateJwtToken(token string) (map[string]interface{}, *error
 	// parse token string
 	claims, err := a.parseTokenString(token)
 	if err != nil {
-		return nil, error_utils.NewInternalServerError(err.Error())
+		return nil, error_utils.NewUnauthorizedError(err.Error())
 	}
 
 	// validate dates
