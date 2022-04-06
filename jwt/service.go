@@ -3,9 +3,10 @@ package jwt
 import (
 	"errors"
 	"fmt"
-	"github.com/lelinu/api_utils/utils/error_utils"
 	"strings"
 	"time"
+
+	"github.com/lelinu/api_utils/utils/error_utils"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -66,7 +67,7 @@ func (a *Service) init(signingAlgorithm string, jwtSecretKey string, issuer stri
 	a.maxRefresh = maxRefreshInMinutes
 
 	// set defaults
-	a.timeFunc = time.Now
+	a.timeFunc = time.Now().UTC
 	if a.timeout <= 0 {
 		a.timeout = time.Minute * timeoutInMinutes
 	}
@@ -81,10 +82,8 @@ func (a *Service) GenerateJwtToken(customClaims map[string]interface{}) (string,
 	token := jwt.New(jwt.GetSigningMethod(a.signingAlgorithm))
 	claims := token.Claims.(jwt.MapClaims)
 
-	if customClaims != nil {
-		for key, value := range customClaims {
-			claims[key] = value
-		}
+	for key, value := range customClaims {
+		claims[key] = value
 	}
 
 	expire := a.timeFunc().UTC().Add(a.timeout)
