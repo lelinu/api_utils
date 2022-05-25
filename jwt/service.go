@@ -129,8 +129,6 @@ func (a *Service) RefreshJwtToken(token string) (string, *time.Time, *error_util
 //ValidateJwtToken will check if the token is expired
 func (a *Service) ValidateJwtToken(token string) (map[string]interface{}, *error_utils.ApiError) {
 
-	fmt.Println("dhalt awn 1....")
-
 	// parse token string
 	claims, err := a.parseTokenString(token)
 	if err != nil {
@@ -138,40 +136,28 @@ func (a *Service) ValidateJwtToken(token string) (map[string]interface{}, *error
 		return nil, error_utils.NewUnauthorizedError(err.Error())
 	}
 
-	fmt.Println("dhalt awn 2....")
-
 	// validate dates
 	if claims["orig_iat"] == nil {
 		return nil, error_utils.NewUnauthorizedError("Orig Iat is missing")
 	}
-
-	fmt.Println("dhalt awn 3....")
 
 	// try convert to float64
 	if _, ok := claims["orig_iat"].(float64); !ok {
 		return nil, error_utils.NewUnauthorizedError("Orig Iat must be float64 format")
 	}
 
-	fmt.Println("dhalt awn 4....")
-
 	// check if exp exists in map
 	if claims["exp"] == nil {
 		return nil, error_utils.NewUnauthorizedError("Exp is missing")
 	}
-
-	fmt.Println("dhalt awn 5....")
 
 	// try convert to float 64
 	if _, ok := claims["exp"].(float64); !ok {
 		return nil, error_utils.NewUnauthorizedError("Exp must be float64 format")
 	}
 
-	fmt.Println("dhalt awn 6....")
-
 	// get value and validate
 	exp := int64(claims["exp"].(float64))
-	fmt.Println(exp)
-	fmt.Println(int64(claims["exp"].(float64)))
 
 	if exp < a.timeFunc().UTC().Unix() {
 		return nil, error_utils.NewUnauthorizedError("Token is expired")
