@@ -13,7 +13,6 @@ import (
 
 //Service struct
 type Service struct {
-	timeFunc         func() time.Time
 	timeout          time.Duration
 	maxRefresh       time.Duration
 	signingAlgorithm string
@@ -67,7 +66,6 @@ func (a *Service) init(signingAlgorithm string, jwtSecretKey string, issuer stri
 	a.maxRefresh = maxRefreshInMinutes
 
 	// set defaults
-	a.timeFunc = time.Now().UTC
 	if a.timeout <= 0 {
 		a.timeout = time.Minute * timeoutInMinutes
 	}
@@ -76,7 +74,7 @@ func (a *Service) init(signingAlgorithm string, jwtSecretKey string, issuer stri
 	return nil
 }
 
-//GenerateJwtToken will generate a new jwt token
+// GenerateJwtToken will generate a new jwt token
 func (a *Service) GenerateJwtToken(customClaims map[string]interface{}) (string, *time.Time, *error_utils.ApiError) {
 
 	token := jwt.New(jwt.GetSigningMethod(a.signingAlgorithm))
@@ -86,9 +84,12 @@ func (a *Service) GenerateJwtToken(customClaims map[string]interface{}) (string,
 		claims[key] = value
 	}
 
-	expire := a.timeFunc().UTC().Add(a.timeout)
+	// get time now UTC
+	timeNowUTC := time.Now().UTC()
+
+	expire := timeNowUTC.Add(a.timeout)
 	claims["exp"] = expire.Unix()
-	claims["orig_iat"] = a.timeFunc().Unix()
+	claims["orig_iat"] = timeNowUTC.Unix()
 	claims["iss"] = a.issuer
 
 	tokenString, err := a.signedString(token)
@@ -114,9 +115,12 @@ func (a *Service) RefreshJwtToken(token string) (string, *time.Time, *error_util
 		newClaims[key] = claims[key]
 	}
 
-	expire := a.timeFunc().UTC().Add(a.timeout)
+	// get time now UTC
+	timeNowUTC := time.Now().UTC()
+
+	expire := timeNowUTC.Add(a.timeout)
 	newClaims["exp"] = expire.Unix()
-	newClaims["orig_iat"] = a.timeFunc().Unix()
+	newClaims["orig_iat"] = timeNowUTC.Unix()
 
 	tokenString, apiErr := a.signedString(newToken)
 	if apiErr != nil {
@@ -132,7 +136,6 @@ func (a *Service) ValidateJwtToken(token string) (map[string]interface{}, *error
 	// parse token string
 	claims, err := a.parseTokenString(token)
 	if err != nil {
-		fmt.Println(err)
 		return nil, error_utils.NewUnauthorizedError(err.Error())
 	}
 
@@ -159,7 +162,10 @@ func (a *Service) ValidateJwtToken(token string) (map[string]interface{}, *error
 	// get value and validate
 	exp := int64(claims["exp"].(float64))
 
-	if exp < a.timeFunc().UTC().Unix() {
+	// get time now UTC
+	timeNowUTC := time.Now().UTC()
+
+	if exp < timeNowUTC.Unix() {
 		return nil, error_utils.NewUnauthorizedError("Token is expired")
 	}
 	// validate dates
